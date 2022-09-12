@@ -1,6 +1,7 @@
 import socket
 import threading
 
+HEADER = 64
 PORT = 5050
 SERVER = socket.gethostbyname(socket.gethostname())                          # IP address of the local server
 ADDR = (SERVER, PORT)
@@ -16,7 +17,7 @@ def handle_client(conn, addr):
     
     connected = True
     while connected:
-        msg_length = conn.recv(64).decode(FORMAT)                            # receive the length of the message
+        msg_length = conn.recv(HEADER).decode(FORMAT)                            # receive the length of the message
         if msg_length:
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)                       # receive the message
