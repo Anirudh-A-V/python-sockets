@@ -11,24 +11,34 @@ DISCONNECT_MESSAGE = "!EXIT"
 server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                   # create a socket object
 server.bind(ADDR)                                                            # bind the socket to the address
 
-
+c_message = ""
+c_addr = ""
 
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
-    
+    global c_message
+    global c_addr
     connected = True
     while connected:
-        c_message = ""
-        msg_length = conn.recv(HEADER).decode(FORMAT)                            # receive the length of the message
+        msg_length = conn.recv(HEADER).decode(FORMAT)                        # receive the length of the message
         if msg_length:
             msg_length = int(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)                       # receive the message
             if msg == DISCONNECT_MESSAGE:
                 connected = False
                 
+            if c_message == "":
+                pass
+            else:
+                c_message = f"[{c_addr}] {c_message}"
+                conn.send(c_message.encode(FORMAT))                          # send the message to the client
+                c_message = ""
+                c_addr = ""
+            
             print(f"[{addr}] {msg}")
             conn.send("Msg received".encode(FORMAT))
             c_message = msg
+            c_addr = addr
     
     conn.close()                                                             # close the connection
         
