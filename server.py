@@ -12,11 +12,13 @@ server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)                   # c
 server.bind(ADDR)                                                            # bind the socket to the address
 
 
+
 def handle_client(conn, addr):
     print(f"[NEW CONNECTION] {addr} connected.")
     
     connected = True
     while connected:
+        c_message = ""
         msg_length = conn.recv(HEADER).decode(FORMAT)                            # receive the length of the message
         if msg_length:
             msg_length = int(msg_length)
@@ -26,6 +28,7 @@ def handle_client(conn, addr):
                 
             print(f"[{addr}] {msg}")
             conn.send("Msg received".encode(FORMAT))
+            c_message = msg
     
     conn.close()                                                             # close the connection
         
